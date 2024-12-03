@@ -11,7 +11,7 @@ This repository is composed of three folders corresponding to different parts of
 
 	Create a Python virtual environment and pip install the corresponding requirements file to set up the folder.
 
-	* For the class-conditioned detector
+	* For the class-conditioned detector and weakly-supervised class proposer
 		
 		```bash
 		cd prompt-to-prompt
@@ -20,7 +20,7 @@ This repository is composed of three folders corresponding to different parts of
 		pip install -r requirements.txt
 		```
 
-	* For the non-LLaVA class proposers
+	* For the non-LLaVA zero-shot class proposers
 
 		```bash
 		cd prompt-to-prompt
@@ -54,3 +54,29 @@ This repository is composed of three folders corresponding to different parts of
 	source env/bin/activate
 	pip install -e .
 	```
+
+# Training
+
+## Class proposer
+
+### Weakly-supervised class proposer
+
+`fc.py` contains code for training and evaluating the weakly-supervised class propser. See the example below for how to use it. Items in `{}` are options.
+
+```bash
+python classify/fc.py \
+--dataset {artdl, iconart} \
+--classification-type {single, multi} \
+--data-type images \
+--modes {train, eval, label} \
+--num-layers {2, 3} \
+--checkpoint checkpoints/{artdl, iconart}/checkpoint.ckpt \
+--eval-label-split test_detect \
+--save-dir labels/{artdl, iconart}
+```
+
+### Zero-shot class proposer
+
+## Class-conditioned
+
+# Evaluating
