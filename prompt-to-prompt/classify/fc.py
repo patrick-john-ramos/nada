@@ -359,7 +359,7 @@ if __name__ == '__main__':
   parser.add_argument('--save-best', action='store_true', help='Save best checkpoint based on val loss')
   parser.add_argument('--save-dir', type=str, help='Where to save annotations')
   parser.add_argument('--caption-dir', type=str, help='Where to load text from when embedding images and text. Only used when data-type is "images+text". This is different from save-dir in the sense that it should only lead to the dataset, not the split. The script expects splits inside this directory.')
-  parser.add_argument('--force-multi-eval-label', action='store_true', help='If model was trained with single label classification, this flag can force a multilabel classification. Only one class will be predicted per input still, but the test labels will be multilabel.')
+  parser.add_argument('--force-multi-eval-label', action='store_true', help='If model was trained with single label classification, this flag can force multilabel classification. Only one class will be predicted per input still, but the test labels will be multilabel.')
   parser.add_argument('--eval-label-split', default='test', help='Dataset split to evaluate and/or label')
   parser.add_argument('--wandb-project', type=str, help='Name of Weights & Biases project. `--wandb-project` and `wandb-name` must both be provided for wandb logging to occur.')
   parser.add_argument('--wandb-name', type=str, help='Name of Weights & Biases experiment. `--wandb-project` and `wandb-name` must both be provided for wandb logging to occur.')
@@ -575,5 +575,5 @@ if __name__ == '__main__':
         # but nonzero works here
         labels = class_labels[np.nonzero(item['pred'])].tolist() 
 
-s        with open(os.path.join(args.save_dir, f'{os.path.splitext(filename)[0]}.json'), 'w') as file:
+        with open(os.path.join(args.save_dir, f'{os.path.splitext(filename)[0]}.json'), 'w') as file:
           json.dump({'filename': filename, 'labels': labels, 'lr': lr, 'weight_decay': weight_decay}, file)

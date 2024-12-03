@@ -7,6 +7,7 @@ numpy==1.26.3
 opencv-python==4.9.0.80
 pandas==2.1.4
 Pillow==9.3.0
+pytorch-lightning==2.2.5
 safetensors==0.4.1
 scikit-learn==1.4.0
 scipy==1.12.0
