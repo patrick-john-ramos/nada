@@ -57,6 +57,8 @@ This repository is composed of three folders corresponding to different parts of
 
 # Preparing data
 
+Download [ArtDL](https://artdl.org/) and [IconArt](https://wsoda.telecom-paristech.fr/downloads/dataset/) and place the `ArtDL` and `IconArt_v1` folders in a `data` folder at the root of the repository.
+
 # Using the class proposer
 
 ### Weakly-supervised class proposer
