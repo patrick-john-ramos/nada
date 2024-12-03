@@ -137,3 +137,5 @@ Then run `LLaVA/check_captions.py` to check if the captions contain the labels a
 Once the captions are ready, use `prompt-to-prompt/generate.py` like in **[template prompt construction](#template-prompt-construction)**, but instead of `--label-dir`, use `--caption-dir`.
 
 # Evaluating
+
+Use the `nada_eval.ipynb` notebook in `LLaVA`.
