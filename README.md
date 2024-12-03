@@ -55,15 +55,16 @@ This repository is composed of three folders corresponding to different parts of
 	pip install -e .
 	```
 
-# Training
+# Preparing data
 
-## Class proposer
+# Using the class proposer
 
 ### Weakly-supervised class proposer
 
-`fc.py` contains code for training and evaluating the weakly-supervised class propser. See the example below for how to use it. Items in `{}` are options.
+Run `prompt-to-prompt/classify/fc.py` to train and perform inference (to create labels for use with the class-conditioned detector) with the weakly-supervised class proposer.
 
 ```bash
+cd prompt-to-prompt
 python classify/fc.py \
 --dataset {artdl, iconart} \
 --classification-type {single, multi} \
@@ -71,12 +72,68 @@ python classify/fc.py \
 --modes {train, eval, label} \
 --num-layers {2, 3} \
 --checkpoint checkpoints/{artdl, iconart}/checkpoint.ckpt \
---eval-label-split test_detect \
---save-dir labels/{artdl, iconart}
+--save-dir labels/{ex. artdl_wscp}
 ```
+
+Specify `--eval-label-split {}` when `eval` or `label` (inference) is includes in `--modes`. Refer to `prompt-to-prompt/data/classify_with_labels.py` for the splits per dataset. Items in `{}` are options/examples.
 
 ### Zero-shot class proposer
 
-## Class-conditioned
+Run `LLaVA/classify.py` to train the zero-shot class proposer.
+
+```bash
+cd LLaVA
+python classify.py \
+--dataset {artdl, iconart} \
+--prompt {who, score}
+--dataset-split {}
+--save-dir ../prompt-to-prompt/labels/{ex. artdl_zscp}
+```
+
+Use `--prompt who` (the choice prompt in the paper) for `artdl` and `--prompt score` (the score prompt in the paper) for `iconart`.
+
+## Using the class-conditioned detector
+
+The class-conditioned detector uses the labels inferred by the class proposer to perform detection requires no training. The detector relies on a text prompt, and we support two kinds of prompt construction.
+
+## Template prompt construction
+
+Template prompt construction inserts the labels into templates à la CLIP. Run `prompt-to-prompt/generate.py`:
+
+```bash
+cd prompt-to-prompt
+python generate.py \
+--dataset {artdl, iconart} \
+--dataset-split {} \
+--prompt-type {} \
+--save-dir annotations/{ex. artdl_wscp} \
+--label-dir labels/{ex. artdl_wscp}
+```
+
+In the paper, we use `--prompt-type wikipedia` for `artdl` and `--prompt-type custom_1` for `iconart`.
+
+## Caption prompt construction
+
+Caption prompt construction uses a caption containing the label as a prompt. First, create captions using `LLaVA/caption.py`:
+
+```bash
+cd LLaVA
+python caption.py \
+--dataset {artdl, iconart \
+--dataset-split {} \
+--prompt-type \
+--label-dir {ex. ../prompt-to-prompt/labels/artdl_wscp} \
+--save-dir {ex. ../prompt-prompt/captions/artdl_wscp}
+```
+
+Then run `LLaVA/check_captions.py` to check if the captions contain the labels at indices within the maximum input length of the diffusion model, and modify them if necessary.
+
+```bash
+--dataset {artdl, iconart \
+--dataset-split {} \
+--prompt-type \
+--save-dir {ex. ../prompt-prompt/captions/artdl_wscp}
+```
+Once the captions are ready, use `prompt-to-prompt/generate.py` like in **[template prompt construction](#template-prompt-construction)**, but instead of `--label-dir`, use `--caption-dir`.
 
 # Evaluating
