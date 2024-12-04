@@ -147,11 +147,11 @@ Use the `nada_eval.ipynb` notebook in `LLaVA`.
 ## Citation
 
 ```
-@InProceedings{Ramos_2024_WACV,
+@InProceedings{Ramos_2025_WACV,
     author    = {Ramos, Patrick and Gonthier, Nicolas and Khan, Selina and Nakashima, Yuta and Garcia, Noa},
     title     = {No Annotations for Object Detection in Art through Stable Diffusion},
     booktitle = {Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)},
     month     = {February},
-    year      = {2024}
+    year      = {2025}
 }
 ```
