@@ -59,9 +59,11 @@ This repository is composed of three folders corresponding to different parts of
 
 Download [ArtDL](https://artdl.org/) and [IconArt](https://wsoda.telecom-paristech.fr/downloads/dataset/) and place the `ArtDL` and `IconArt_v1` folders in a `data` folder at the root of the repository.
 
-# Using the class proposer
+## Using NADA
 
-### Weakly-supervised class proposer
+### Using the class proposer
+
+#### Weakly-supervised class proposer
 
 Run `prompt-to-prompt/classify/fc.py` to train and perform inference (to create labels for use with the class-conditioned detector) with the weakly-supervised class proposer.
 
@@ -79,7 +81,7 @@ python classify/fc.py \
 
 Specify `--eval-label-split {}` when `eval` or `label` (inference) is includes in `--modes`. Refer to `prompt-to-prompt/data/classify_with_labels.py` for the splits per dataset. Items in `{}` are options/examples.
 
-### Zero-shot class proposer
+#### Zero-shot class proposer
 
 Run `LLaVA/classify.py` to train the zero-shot class proposer.
 
@@ -94,11 +96,11 @@ python classify.py \
 
 Use `--prompt who` (the choice prompt in the paper) for `artdl` and `--prompt score` (the score prompt in the paper) for `iconart`.
 
-## Using the class-conditioned detector
+### Using the class-conditioned detector
 
 The class-conditioned detector uses the labels inferred by the class proposer to perform detection requires no training. The detector relies on a text prompt, and we support two kinds of prompt construction.
 
-## Template prompt construction
+#### Template prompt construction
 
 Template prompt construction inserts the labels into templates à la CLIP. Run `prompt-to-prompt/generate.py`:
 
@@ -114,7 +116,7 @@ python generate.py \
 
 In the paper, we use `--prompt-type wikipedia` for `artdl` and `--prompt-type custom_1` for `iconart`.
 
-## Caption prompt construction
+#### Caption prompt construction
 
 Caption prompt construction uses a caption containing the label as a prompt. First, create captions using `LLaVA/caption.py`:
 
@@ -138,6 +140,6 @@ Then run `LLaVA/check_captions.py` to check if the captions contain the labels a
 ```
 Once the captions are ready, use `prompt-to-prompt/generate.py` like in **[template prompt construction](#template-prompt-construction)**, but instead of `--label-dir`, use `--caption-dir`.
 
-# Evaluating
+## Evaluation
 
 Use the `nada_eval.ipynb` notebook in `LLaVA`.
