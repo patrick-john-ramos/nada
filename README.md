@@ -1,7 +1,7 @@
 # NADA
 Official code for No Annotations for Object Detection in Art through Stable Diffusion (WACV 2025)
 
-# Setup
+## Setup
 
 This repository is composed of three folders corresponding to different parts of training or evaluting NADA. The code is organized this way to prevent conflicting dependicies.
 
@@ -143,3 +143,15 @@ Once the captions are ready, use `prompt-to-prompt/generate.py` like in **[templ
 ## Evaluation
 
 Use the `nada_eval.ipynb` notebook in `LLaVA`.
+
+## Citation
+
+```
+@InProceedings{Ramos_2024_WACV,
+    author    = {Ramos, Patrick and Gonthier, Nicolas and Khan, Selina and Nakashima, Yuta and Garcia, Noa},
+    title     = {No Annotations for Object Detection in Art through Stable Diffusion},
+    booktitle = {Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)},
+    month     = {February},
+    year      = {2024}
+}
+```
