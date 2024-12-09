@@ -31,6 +31,9 @@
         {% endfor %}
         </p>
       {% endif %}
+      {% if site.venue %}
+        <h2> {{ site.venue }}</h2>
+      {% endif %}      
       {% if site.github.is_project_page %}
         <a href="{{ site.github.repository_url }}" class="btn">💻 Code</a>
         <a href="" class="btn">📖 Paper (coming soon)</a>

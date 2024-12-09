@@ -1,6 +1,6 @@
 ---
 title: NADA
-description: No Annotations for Object Detection in Art through Stable Diffusion (WACV 2025)
+description: No Annotations for Object Detection in Art through Stable Diffusion
 ---
 ![](wikiart_samples.svg)
 
@@ -12,152 +12,43 @@ Object detection in art is a valuable tool for the digital humanities, as it all
 
 ![](model.svg)
 
-Official code for No Annotations for Object Detection in Art through Stable Diffusion (WACV 2025)
+NADA consists of predicting classes from a painting with a class proposer and extracting bounding boxes for the predicted classes with a class-conditioned detector.
 
-## Setup
+The class proposer can operate in a weakly-supervised or a zero-shot setting. The weakly supervised class proposer (WSCP) trains a lightweighted MLP to classify inputs, while the zero-shot class proposer (ZSCP) uses a VLM.
 
-This repository is composed of three folders corresponding to different parts of training or evaluting NADA. The code is organized this way to prevent conflicting dependicies.
+The class-conditioned detector leverages Stable Diffusion to extract bounding boxes by inverting and regenerating the painting conditioned on an input prompt. The cross-attention maps from the predicted class are aggregated and processed with watershed segmentation to find the bounding box
 
-* `prompt-to-prompt`
+# Results
 
-	This folder contains code for the class proposers not based on LLaVA and the class-conditioned detector. This uses code from [Google's prompt-to-prompt repository](https://github.com/google/prompt-to-prompt) and [DAAM](https://github.com/castorini/daam).
+![](results.svg)
 
-	Create a Python virtual environment and pip install the corresponding requirements file to set up the folder.
+NADA can localize objects and recognize iconographic elements (ex. Saint Sebastian's arrows). However, limitations include misclassifications (ex. Paul → Jerome) or incorrect boxes (ex. angel).
 
-	* For the class-conditioned detector and weakly-supervised class proposer
-		
-		```bash
-		cd prompt-to-prompt
-		python -m venv env
-		source env/bin/activate
-		pip install -r requirements.txt
-		```
+## Weakly-supervised detection
 
-	* For the non-LLaVA zero-shot class proposers
+| Method | Train detector? |  ArtDL 2.0 | IconArt |
+| --- | :---: |  :---: | :---: |
+| PCL | ✅ |  24.8 | 5.9 |
+| CASD | ✅ |13.5 | 4.5 |
+| UWSOD | ✅ |7.6 | 6.2 |
+| CAM+PaS | ✅ |40.3 | 3.2 |
+| Milani | ✅ |41.5 | **16.6** |
+| MI-Max-HL | ❌ | 8.2 | 14.5 |
+| NADA <sub>(with WSCP)</sub> | ❌ | **45.8** | 13.8 |
 
-		```bash
-		cd prompt-to-prompt
-		python -m venv cp_env
-		source cp_env/bin/activate
-		pip install -r cp_requirements.txt
-		```
+NADA <sub>(with WSCP)</sub> is competitive with other WSOD methods on art image datasets while being only one of two evaluated methods that does not require training the detector.
 
-* `detectron2`
+## Zero-shot supervised detection
 
-	Code for evaluating predictions made by NADA. Bounding boxes are saved in the COCO format, so we use [Meta's Detectron2 library](https://github.com/facebookresearch/detectron2) to evaluate them.
+| Class proposal | ArtDL 2.0 | IconArt |
+| --- | :---: | :---: |
+| CLIP | 13.3 | 6.8 |
+| InstructBLIP | 18.6 | 7.9 |
+| NADA <sub>(with ZSCP)</sub> | **21.8** | **15.1** |
 
-	Create a virtual environment and pip install from `requirements.txt` to set it up.
+As the first work into zero-shot object detection in artwork images, NADA <sub>(with ZSCP)</sub> is compared to two baseline class proposers, outperforming both.
 
-	```bash
-	cd detectron2
-	python -m venv env
-	source env/bin/activate
-	pip install -r requirements.txt
-	```
-
-* `LLaVA`
-
-	Code for generating outputs with LLaVA. We use LLaVA for our zero-shot class proposer and for caption prompt construction. This uses code from the [official LLaVA repository](https://github.com/haotian-liu/LLaVA/tree/main).
-
-	Create a Python environment and install from folder to set it up.
-
-	```bash
-	cd LLaVA
-	python -m venv env
-	source env/bin/activate
-	pip install -e .
-	```
-
-# Preparing data
-
-Download [ArtDL](https://artdl.org/) and [IconArt](https://wsoda.telecom-paristech.fr/downloads/dataset/) and place the `ArtDL` and `IconArt_v1` folders in a `data` folder at the root of the repository.
-
-## Using NADA
-
-### Using the class proposer
-
-#### Weakly-supervised class proposer
-
-Run `prompt-to-prompt/classify/fc.py` to train and perform inference (to create labels for use with the class-conditioned detector) with the weakly-supervised class proposer.
-
-```bash
-cd prompt-to-prompt
-python classify/fc.py \
---dataset {artdl, iconart} \
---classification-type {single, multi} \
---data-type images \
---modes {train, eval, label} \
---num-layers {2, 3} \
---checkpoint checkpoints/{artdl, iconart}/checkpoint.ckpt \
---save-dir labels/{ex. artdl_wscp}
-```
-
-Specify `--eval-label-split {}` when `eval` or `label` (inference) is includes in `--modes`. Refer to `prompt-to-prompt/data/classify_with_labels.py` for the splits per dataset. Items in `{}` are options/examples.
-
-#### Zero-shot class proposer
-
-Run `LLaVA/classify.py` to train the zero-shot class proposer.
-
-```bash
-cd LLaVA
-python classify.py \
---dataset {artdl, iconart} \
---prompt {who, score}
---dataset-split {}
---save-dir ../prompt-to-prompt/labels/{ex. artdl_zscp}
-```
-
-Use `--prompt who` (the choice prompt in the paper) for `artdl` and `--prompt score` (the score prompt in the paper) for `iconart`.
-
-### Using the class-conditioned detector
-
-The class-conditioned detector uses the labels inferred by the class proposer to perform detection requires no training. The detector relies on a text prompt, and we support two kinds of prompt construction.
-
-#### Template prompt construction
-
-Template prompt construction inserts the labels into templates à la CLIP. Run `prompt-to-prompt/generate.py`:
-
-```bash
-cd prompt-to-prompt
-python generate.py \
---dataset {artdl, iconart} \
---dataset-split {} \
---prompt-type {} \
---save-dir annotations/{ex. artdl_wscp} \
---label-dir labels/{ex. artdl_wscp}
-```
-
-In the paper, we use `--prompt-type wikipedia` for `artdl` and `--prompt-type custom_1` for `iconart`.
-
-#### Caption prompt construction
-
-Caption prompt construction uses a caption containing the label as a prompt. First, create captions using `LLaVA/caption.py`:
-
-```bash
-cd LLaVA
-python caption.py \
---dataset {artdl, iconart \
---dataset-split {} \
---prompt-type \
---label-dir {ex. ../prompt-to-prompt/labels/artdl_wscp} \
---save-dir {ex. ../prompt-prompt/captions/artdl_wscp}
-```
-
-Then run `LLaVA/check_captions.py` to check if the captions contain the labels at indices within the maximum input length of the diffusion model, and modify them if necessary.
-
-```bash
---dataset {artdl, iconart \
---dataset-split {} \
---prompt-type \
---save-dir {ex. ../prompt-prompt/captions/artdl_wscp}
-```
-Once the captions are ready, use `prompt-to-prompt/generate.py` like in **[template prompt construction](#template-prompt-construction)**, but instead of `--label-dir`, use `--caption-dir`.
-
-## Evaluation
-
-Use the `nada_eval.ipynb` notebook in `LLaVA`.
-
-## Citation
+# Citation
 
 ```
 @InProceedings{Ramos_2025_WACV,
