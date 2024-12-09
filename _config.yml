@@ -1,3 +1,18 @@
+title: NADA
+description: foobar
+
+authors:
+  "Patrick Ramos": 1
+  "Nicolas Gonthier": 2
+  "Selina Khan": 3
+  "Yuta Nakashima": 1
+  "Noa Garcia": 1
+
+affiliations:
+  1: Osaka University
+  2: Univ Gustave Eiffel, ENSG, IGN, LASTIG, France
+  3: University of Amsterdam
+
 remote_theme: pages-themes/cayman@v0.2.0
 plugins:
 - jekyll-remote-theme # add this line to the plugins list if you already have one
