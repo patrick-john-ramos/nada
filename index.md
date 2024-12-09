@@ -38,7 +38,7 @@ NADA can localize objects and recognize iconographic elements (ex. Saint Sebasti
 
 NADA <sub>(with WSCP)</sub> is competitive with other WSOD methods on art image datasets while being only one of two evaluated methods that does not require training the detector.
 
-## Zero-shot supervised detection
+## Zero-shot detection
 
 | Class proposal | ArtDL 2.0 | IconArt |
 | --- | :---: | :---: |
