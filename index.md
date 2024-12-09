@@ -10,7 +10,7 @@ Object detection in art is a valuable tool for the digital humanities, as it all
 
 # NADA
 
-![](model.png)
+![](model.svg)
 
 Official code for No Annotations for Object Detection in Art through Stable Diffusion (WACV 2025)
 
