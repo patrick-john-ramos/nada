@@ -1,7 +1,7 @@
 # NADA
 Official code for No Annotations for Object Detection in Art through Stable Diffusion (WACV 2025)
 
-[📖 Paper](https://arxiv.org/abs/2412.06286) [🖥️ Project Page](https://patrick-john-ramos.github.io/nada/)
+[[📖 Paper](https://arxiv.org/abs/2412.06286)] [[🖥️ Project Page](https://patrick-john-ramos.github.io/nada/)]
 
 ## Setup
 
