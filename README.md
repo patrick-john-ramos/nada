@@ -1,6 +1,8 @@
 # NADA
 Official code for No Annotations for Object Detection in Art through Stable Diffusion (WACV 2025)
 
+[📖 Paper](https://arxiv.org/abs/2412.06286) [🖥️ Project Page](https://patrick-john-ramos.github.io/nada/)
+
 ## Setup
 
 This repository is composed of three folders corresponding to different parts of training or evaluting NADA. The code is organized this way to prevent conflicting dependicies.
